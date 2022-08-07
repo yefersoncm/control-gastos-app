@@ -163,7 +163,7 @@ p {
 .section-center {
   width: 90vw;
   margin: 0 auto;
-  max-width: 35rem;
+  max-width: 100%;
   margin-top: 8rem;
 }
 @media screen and (min-width: 992px) {
@@ -186,7 +186,7 @@ Grocery List
   border-radius: var(--radius);
   box-shadow: var(--light-shadow);
   transition: var(--transition);
-  padding: 2rem;
+  padding: 3rem;
 }
 .section-center:hover {
   box-shadow: var(--dark-shadow);
