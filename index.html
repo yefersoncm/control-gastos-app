@@ -27,7 +27,7 @@
         <h3>Lista de gastos</h3>
         <div class="form-control1">
           <input type="text" id="grocery" placeholder="gasto">
-          <input type="number" id="price" placeholder="$ 0" class="bg-info" onkeyup="formatMoneyNumber()">
+          <input type="number" min="0.00" max="1000000000.00" step="0.01" id="price" placeholder="$ 0" class="bg-info" >
           <button type="submit" class="submit-btn">Agregar</button>
         </div>
       </form>

@@ -46,13 +46,23 @@ function addItem(e){
     total.textContent ="$ "+formatMoneyNumber(calcTotal());
     setBackToDefault();
   }else if (value && editFlag && price) {
-    editElement.innerHTML = value;
+    //editElement.innerHTML = value;
     displayAlert("valor cambiado", "success1");
     //edit local storage
     editLocalStorage(editID, value, price);
+    const items = document.querySelectorAll('.grocery-item');
+
+    if (items.length > 0) {
+      items.forEach(function(item){
+        list.removeChild(item);
+      });
+    }
+    container.classList.remove("show-container");
     setBackToDefault();
+    
+    setUpItems();
   } else {
-    displayAlert("porfavor ingrese un valor", "danger1")
+    displayAlert("porfavor ingrese un valor y un nombre", "danger1")
   }
 }
 
@@ -90,6 +100,7 @@ function deletiItem(e){
    list.removeChild(element);
    if(list.children.length === 0){
      container.classList.remove("show-container");
+     container.classList.add("show-container");
    }
    displayAlert("Item eliminado", "danger1");
    setBackToDefault();
@@ -99,17 +110,19 @@ function deletiItem(e){
 // edit function
 function editItem(e){
   const element = e.currentTarget.parentElement.parentElement;
-  // set editItem
-  editElement = e.currentTarget.parentElement.previousElementSibling;
-  editElementPrice = e.currentTarget.parentElement.parentElement.children[1].children[0].innerText;
-  // set form value
-  grocery.value = editElement.innerHTML;
-  priceGrocery.textContent = editElementPrice.innerHTML;
-  console.log(editElementPrice);
-  // grocery.price = editElementPrice.innerHTML;
   editFlag = true;
   editID = element.dataset.id;
+  // set editItem
+  editElement = e.currentTarget.parentElement.previousElementSibling;
+  
+  // set form value
+  grocery.value = editElement.innerHTML;
+  priceGrocery.value = traerPrecio(editID);
+  container.classList.add("show-container");
+  console.log(priceGrocery.value);
+  
   submitBtn.textContent = "Editar";
+  
 }
 // set back to default
 function setBackToDefault(){
@@ -224,13 +237,13 @@ function calcTotal(){
 
 function traerPrecio(id){
   let items = getLocalStorage();
-  items.forEach(function(item){
-    console.log("Item ID: "+item.id+", ID:"+id)
-    if(item.id === id){
-      console.log("Precio: "+item.price)
-      return item.price;
+  for (var i = 0; i < items.length ; i++){
+    //console.log("Item ID: "+item.id+", ID:"+id)
+    if(items[i].id === id){
+      console.log("Precio: "+items[i].price)
+      return items[i].price;
     }
-  });
+  };
 }
 
 function formatMoneyNumber(num) {
@@ -248,4 +261,21 @@ function formatMoneyNumber(num) {
   for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3) ; i++)
       num = num.substring(0, num.length - (4 * i + 3)) + '.' + num.substring(num.length - (4 * i + 3));
   return (((sign) ? '' : '-') + num + ',' + cents);
+}
+
+function formatMoneyNumberInput(num) {
+  if (!num || num == 'NaN') return '-';
+  if (num == 'Infinity') return '&#x221e;';
+  num = num.toString().replace(/\$|\,/g, '');
+  if (isNaN(num))
+      num = "0";
+  sign = (num == (num = Math.abs(num)));
+  num = Math.floor(num * 100 + 0.50000000001);
+  cents = num % 100;
+  num = Math.floor(num / 100).toString();
+  if (cents < 10)
+      cents = "0" + cents;
+  for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3) ; i++)
+      num = num.substring(0, num.length - (4 * i + 3)) + '.' + num.substring(num.length - (4 * i + 3));
+     return document.getElementById("price").value = num + ',' + cents;
 }
